@@ -137,19 +137,21 @@ namespace AppDev.Areas.StoreOwner.Controllers
             return View(requestCategory);
         }
         // POST: StoreOwner/RequestCategories/Delete/5
-[HttpPost, ActionName("Delete")]
-[ValidateAntiForgeryToken]
-public async Task<IActionResult> DeleteConfirmed(int id)
-{
-    var requestCategory = await _context.RequestCategories.FindAsync(id);
-    if (requestCategory != null && requestCategory.IsEditable(StoreOwnerId))
-    {
-        _context.RequestCategories.Remove(requestCategory);
-        await _context.SaveChangesAsync();
-        return RedirectToAction(nameof(Index));
-    }
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var requestCategory = await _context.RequestCategories
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (requestCategory != null && requestCategory.IsEditable(StoreOwnerId))
+            {
+                _context.RequestCategories.Remove(requestCategory);
+            }
 
-    return NotFound();
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+    }
 }
 
 
